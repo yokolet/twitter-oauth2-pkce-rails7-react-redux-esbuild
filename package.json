@@ -19,6 +19,7 @@
     "typescript": "^5.0.4"
   },
   "scripts": {
-    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets"
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets --loader:.js=jsx",
+    "check-types": "tsc --project tsconfig.json --noEmit --watch --preserveWatchOutput"
   }
 }
