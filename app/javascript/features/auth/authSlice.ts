@@ -17,13 +17,13 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setLoggedIn: (state, action: PayloadAction<boolean>) => {
+    setLoggedIn: (state: AuthState, action: PayloadAction<boolean>) => {
       state.loggedIn = action.payload;
     },
-    setAccessToken: (state, action: PayloadAction<string>) => {
+    setAccessToken: (state: AuthState, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
     },
-    setTokenExpiryDate: (state, action: PayloadAction<number>) => {
+    setTokenExpiryDate: (state: AuthState, action: PayloadAction<number>) => {
       const date = new Date();
       date.setSeconds(date.getSeconds() + action.payload);
       state.tokenExpiryDate = date.toISOString();

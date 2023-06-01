@@ -32,7 +32,6 @@ export const selectName = (state: RootState) => state.twitter.name;
 export const selectUsername = (state: RootState) => state.twitter.username;
 
 export const setUserProfileAsync = (accessToken: string): AppThunk => dispatch => {
-  console.log(`accessToken: ${accessToken}`);
   fetch('http://www.localhost:3000/me', {
     method: 'GET',
     headers: {
@@ -40,7 +39,6 @@ export const setUserProfileAsync = (accessToken: string): AppThunk => dispatch =
     },
   }).then(response => response.json())
     .then((data) => {
-      console.log(data);
       dispatch(setLoggedIn(true));
       dispatch(setName(data.name ? data.name : data.id));
       dispatch(setUsername(data.username));
