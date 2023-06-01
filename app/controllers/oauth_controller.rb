@@ -17,7 +17,15 @@ class OauthController < ApplicationController
     access_token = getOAuthToken("https://api.twitter.com", "/2/oauth2/token",
                                  client_id, client_secret,
                                  oauthTokenParams)
-    user = getUser("https://api.twitter.com", "/2/users/me", access_token)
+    data = getUser("https://api.twitter.com", "/2/users/me", access_token)
+    createUser(
+      {
+        username: data['username'],
+        name: data['name'],
+        provider: User.providers[:twitter],
+        pid: data['id']
+      }
+    )
   end
 
   private
@@ -53,6 +61,13 @@ class OauthController < ApplicationController
     response = conn.get(path)
     puts("response.status: #{response.status.inspect}")
     puts("response.body: #{response.body.inspect}")
+    body_obj = JSON.parse(response.body)
+    body_obj['data']
+  end
+
+  def createUser(user)
+    puts("user: #{user}")
+    User.find_or_create_by(user)
   end
 
 end
