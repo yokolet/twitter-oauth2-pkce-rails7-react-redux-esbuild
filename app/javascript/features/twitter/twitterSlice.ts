@@ -18,10 +18,10 @@ export const twitterSlice = createSlice({
   name: 'twitter',
   initialState,
   reducers: {
-    setName: (state, action: PayloadAction<string>) => {
+    setName: (state :TwitterState, action: PayloadAction<string>) => {
       state.name = action.payload;
     },
-    setUsername: (state, action: PayloadAction<string>) => {
+    setUsername: (state :TwitterState, action: PayloadAction<string>) => {
       state.username = action.payload;
     },
   },
@@ -32,7 +32,8 @@ export const selectName = (state: RootState) => state.twitter.name;
 export const selectUsername = (state: RootState) => state.twitter.username;
 
 export const setUserProfileAsync = (accessToken: string): AppThunk => dispatch => {
-  fetch('http://www.localhost:3001/twitter/me', {
+  console.log(`accessToken: ${accessToken}`);
+  fetch('http://www.localhost:3000/me', {
     method: 'GET',
     headers: {
       Authorization: 'Bearer ' + accessToken,

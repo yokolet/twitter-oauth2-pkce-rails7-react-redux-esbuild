@@ -1,4 +1,5 @@
 require 'faraday'
+require 'jwt'
 
 CODE_VERIFIER='omjCvT2xQpr0LAznzCNMHDdQ7neFv5jq29LkMZHN0MQPmfXqVs48eDjVg3u0ov3U'
 CLIENT_URL='http://localhost:3000'
@@ -18,7 +19,7 @@ class OauthController < ApplicationController
                                  client_id, client_secret,
                                  oauthTokenParams)
     data = getUser("https://api.twitter.com", "/2/users/me", access_token)
-    createUser(
+    user = getUserFromDb(
       {
         username: data['username'],
         name: data['name'],
@@ -26,6 +27,8 @@ class OauthController < ApplicationController
         pid: data['id']
       }
     )
+    signedToken = getSignedToken(access_token, user)
+    redirect_to(root_path(access_token: signedToken))
   end
 
   private
@@ -65,9 +68,21 @@ class OauthController < ApplicationController
     body_obj['data']
   end
 
-  def createUser(user)
+  def getUserFromDb(user)
     puts("user: #{user}")
     User.find_or_create_by(user)
+  end
+
+  def getSignedToken(access_token, user)
+    JWT.encode(
+      {
+        username: user.username,
+        provider: user.provider,
+        accessToken: access_token
+      },
+      Rails.application.credentials.jwt_secret,
+      'HS256'
+    )
   end
 
 end
