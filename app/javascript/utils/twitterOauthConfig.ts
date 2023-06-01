@@ -1,12 +1,12 @@
 const authEndpoint = 'https://twitter.com/i/oauth2/authorize';
 
-const client_id = "REw3QnZQeVlBek81S0VOdTBBT0Y6MTpjaQ";
+const client_id = environment.REACT_APP_TWITTER_CLIENT_ID;
 const redirect_uri = "http://www.localhost:3000/oauth/twitter";
 
 export const getTwitterOauthUrl = (): string => {
   // temporarily uses static code verifier and challenge
   let code_challenge = "WeI7ul0uzUr0Zv89EPknzv4iNqmQuEysEtkWan7P3FA";
-  let state = "state"; // generateRandomString(16);
+  let state = "state";
   let scope = ["users.read", "tweet.read", "follows.read", "follows.write"].join(" ");
   // @ts-ignore
   let args = new URLSearchParams({
