@@ -15,9 +15,9 @@ class OauthController < ApplicationController
       redirect_uri: 'http://www.localhost:3000/oauth/twitter',
       code: params[:code]
     }
-    access_token = getOAuthToken("https://api.twitter.com", "/2/oauth2/token",
-                                 client_id, client_secret,
-                                 oauthTokenParams)
+    access_token, expires_in = getOAuthToken("https://api.twitter.com", "/2/oauth2/token",
+                                             client_id, client_secret,
+                                             oauthTokenParams)
     data = getUser("https://api.twitter.com", "/2/users/me", access_token)
     user = getUserFromDb(
       {
@@ -28,7 +28,7 @@ class OauthController < ApplicationController
       }
     )
     signedToken = getSignedToken(access_token, user)
-    redirect_to(root_path(access_token: signedToken))
+    redirect_to(root_path(access_token: signedToken, expires_in: expires_in))
   end
 
   private
@@ -50,7 +50,7 @@ class OauthController < ApplicationController
     puts("response.status: #{response.status.inspect}")
     puts("response.body: #{response.body.inspect}")
     body_obj = JSON.parse(response.body)
-    body_obj['access_token']
+    [body_obj['access_token'], body_obj['expires_in']]
   end
 
   def getUser(url, path, access_token)
