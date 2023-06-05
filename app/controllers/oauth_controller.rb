@@ -6,12 +6,9 @@ CLIENT_URL='http://localhost:3000'
 
 class OauthController < ApplicationController
   def twitter
-    puts("params: #{params}")
     client_id = Rails.application.credentials.twitter.client_id.strip
     client_secret = Rails.application.credentials.twitter.client_secret.strip
     oauthTokenParams = {
-      grant_type: 'authorization_code',
-      client_id: client_id,
       redirect_uri: 'http://www.localhost:3000/oauth/twitter',
       code: params[:code]
     }
@@ -38,7 +35,12 @@ class OauthController < ApplicationController
   end
 
   def getOAuthToken(url, path, client_id, client_secret, oauth_token_params)
-    oauth_token_params[:code_verifier] = CODE_VERIFIER
+    oauth_token_params = oauth_token_params.merge({
+                                                    grant_type: 'authorization_code',
+                                                    client_id: client_id,
+                                                    code_verifier: CODE_VERIFIER
+                                                  })
+    puts("oauth_token_params: #{oauth_token_params}")
     conn = Faraday.new(
       url: url,
       headers: {
